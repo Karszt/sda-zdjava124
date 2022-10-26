@@ -2,6 +2,11 @@ package pl.sdacademy.java.jdbc.workshop1;
 
 import pl.sdacademy.java.jdbc.utils.ApplicationPropertiesProvider;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 /*
@@ -20,6 +25,16 @@ public class Workshop1 {
     }
 
     public static List<String> getPolishCities(String jdbcUrl) {
-        throw new UnsupportedOperationException("TODO");
+        final List<String> cities = new LinkedList<>();
+        try (final Connection connection = DriverManager.getConnection(jdbcUrl)) {
+            ResultSet resultSet = connection.createStatement().executeQuery("SELECT city FROM city JOIN country ON country.country_id = city.country_id WHERE country.country_id = 76;");
+            while (resultSet.next()) {
+                String tooAdd = resultSet.getString("city");
+                cities.add(tooAdd);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cities;
     }
 }
